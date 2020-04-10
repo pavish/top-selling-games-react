@@ -1,6 +1,7 @@
 import React from "react";
 import Spinner from "./Spinner";
 import Status from "./Status";
+import Table from './Table';
 import "./styles.css";
 
 export default class App extends React.Component {
@@ -8,8 +9,7 @@ export default class App extends React.Component {
     super(props);
     this.state = {
       status: Status.FETCHING,
-      gameRankList: [],
-      data: []
+      gameRankList: []
     };
   }
 
@@ -18,6 +18,7 @@ export default class App extends React.Component {
       .then(response => response.json())
       .then(data => {
         this.setState({
+          gameRankList: data,
           status: Status.FETCHED
         });
       })
@@ -32,9 +33,12 @@ export default class App extends React.Component {
   render() {
     return (
       <div className="App">
-        Top Selling Games 2020
-        {this.state.status}
-        {this.state.status !== Status.FETCHED && <Spinner />}
+        <h1>
+          Top Selling Games of all time
+        </h1>
+        {this.state.status === Status.FETCHING && <Spinner />}
+        {this.state.status === Status.FETCHED && <Table gameRankList={this.state.gameRankList}/>}
+        {this.state.status === Status.ERROR && <h3 className="error">Error in fetching data</h3>}
       </div>
     );
   }
